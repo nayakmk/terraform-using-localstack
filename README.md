@@ -26,3 +26,15 @@ endpoint_url=http://localhost:4566
 Or
 
 > aws --profile localstack s3api list-buckets
+
+## AWS
+
+### EC2 Instance
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance?product_intent=terraform#example-usage
+
+### S3 
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#example-usage
+
+## 
