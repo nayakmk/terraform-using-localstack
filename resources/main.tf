@@ -6,6 +6,6 @@ resource "aws_instance" "my-ec2" {
 
   tags = {
     "name" : "localstack-ec2"
-    "value": "my-ec2"
+    "value" : "my-ec2"
   }
 }
