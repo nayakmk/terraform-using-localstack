@@ -19,10 +19,11 @@ resource "aws_vpc" "vpc-dev" {
 }
 
 # Resource Block - Subnet
-resource "aws_subnet" "subnet-dev" {
+resource "aws_subnet" "public-subnet-dev" {
   vpc_id            = aws_vpc.vpc-dev.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-1a"
+  map_public_ip_on_launch = true
 
   tags = {
     "name" : "Subnet Dev"
@@ -51,12 +52,22 @@ resource "aws_route" "vpc-dev-public-route" {
 }
 
 # Resource Block - Route Table Subnet Association
+
+/*
+The aws_route_table_association resource associates the route table rt-dev with the subnet public-subnet-dev. 
+This means that traffic originating from the subnet public-subnet-dev will be routed according to the rules defined in the route table rt-dev.
+*/
 resource "aws_route_table_association" "vpc-dev-public-route-table-association" {
   route_table_id = aws_route_table.rt-dev.id
-  subnet_id      = aws_subnet.subnet-dev.id
+  subnet_id      = aws_subnet.public-subnet-dev.id
 }
 
 # Resource Block - Security Group
+
+/*
+The aws_security_group resource creates a security group named dev-vpc-sg2 for the VPC vpc-dev. 
+It allows inbound traffic on ports 22 (SSH) and 80 (HTTP) from anywhere, and allows all outbound traffic.
+*/
 resource "aws_security_group" "dev-vpc-sg2" {
   vpc_id      = aws_vpc.vpc-dev.id
   description = "Dev VPC Security Group"
@@ -93,11 +104,21 @@ resource "aws_instance" "my-ec2" {
   ami                    = "ami-ff0fea8310f3"
   instance_type          = "t2.micro"
   availability_zone      = "us-east-1a"
-  subnet_id              = aws_subnet.subnet-dev.id
+  key_name               = "terraform-key"
+  subnet_id              = aws_subnet.public-subnet-dev.id
   vpc_security_group_ids = [aws_security_group.dev-vpc-sg2.id]
 
   tags = {
     "name" : "localstack-ec2"
     "value" : "my-ec2"
   }
+}
+
+# Resource Block - Elastic IP
+resource "aws_eip" "dev-eip" {
+  instance = aws_instance.my-ec2.id
+
+  # Meta Argument
+  depends_on = [aws_internet_gateway.gateway-dev]
+
 }
