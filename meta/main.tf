@@ -14,19 +14,19 @@ resource "aws_vpc" "vpc-dev" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    "name" : "VPC Dev"
+    Name : "VPC Dev"
   }
 }
 
 # Resource Block - Subnet
 resource "aws_subnet" "public-subnet-dev" {
-  vpc_id            = aws_vpc.vpc-dev.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
+  vpc_id                  = aws_vpc.vpc-dev.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 
   tags = {
-    "name" : "Subnet Dev"
+    Name : "Subnet Dev"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_internet_gateway" "gateway-dev" {
   vpc_id = aws_vpc.vpc-dev.id
 
   tags = {
-    "name" : "Gateway Dev"
+    Name : "Gateway Dev"
   }
 }
 
@@ -108,17 +108,21 @@ resource "aws_instance" "my-ec2" {
   subnet_id              = aws_subnet.public-subnet-dev.id
   vpc_security_group_ids = [aws_security_group.dev-vpc-sg2.id]
 
+  # Meta Argument
+  count = 5
+
   tags = {
-    "name" : "localstack-ec2"
-    "value" : "my-ec2"
+    Name = "my-ec2-instance-${count.index}"
   }
 }
 
 # Resource Block - Elastic IP
 resource "aws_eip" "dev-eip" {
-  instance = aws_instance.my-ec2.id
+  # Meta Argument
+  count = 5
+
+  instance = aws_instance.my-ec2[count.index].id
 
   # Meta Argument
   depends_on = [aws_internet_gateway.gateway-dev]
-
 }
