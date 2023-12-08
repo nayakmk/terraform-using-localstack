@@ -11,5 +11,6 @@ services:
       - SERVICES=sns,sqs,dynamodb,s3,iam,lambda,ec2
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
+      - HOSTNAME_EXTERNAL=localhost
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'

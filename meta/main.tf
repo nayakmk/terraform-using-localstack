@@ -118,11 +118,35 @@ resource "aws_instance" "my-ec2" {
 
 # Resource Block - Elastic IP
 resource "aws_eip" "dev-eip" {
-  # Meta Argument
+  # Meta Argument - count
   count = 5
 
   instance = aws_instance.my-ec2[count.index].id
 
-  # Meta Argument
+  # Meta Argument - depends_on
   depends_on = [aws_internet_gateway.gateway-dev]
+}
+
+# Create S3 Bucket per environment with for_each and maps
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
+
+resource "aws_s3_bucket" "mys3bucket" {
+
+  # for_each Meta-Argument
+  for_each = {
+    dev  = "my-dapp-bucket"
+    qa   = "my-qapp-bucket"
+    stag = "my-sapp-bucket"
+    prod = "my-papp-bucket"
+  }
+
+  bucket = "${each.key}-${each.value}"
+  #acl    = "private" # This argument is deprecated, so commenting it. 
+
+
+  tags = {
+    Environment = each.key
+    bucketname  = "${each.key}-${each.value}"
+    eachvalue   = each.value
+  }
 }
