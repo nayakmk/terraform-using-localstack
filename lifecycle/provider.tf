@@ -7,6 +7,7 @@ provider "aws" {
   skip_metadata_api_check     = true
   skip_requesting_account_id  = true
   s3_force_path_style         = true
+  
   endpoints {
     apigateway      = "http://localhost:4566"
     apigatewayv2    = "http://localhost:4566"

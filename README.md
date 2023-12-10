@@ -37,4 +37,6 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/inst
 
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#example-usage
 
-## 
+## References
+
+https://github.com/nayakmk/hashicorp-certified-terraform-associate

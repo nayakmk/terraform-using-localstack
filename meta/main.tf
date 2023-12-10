@@ -132,7 +132,7 @@ resource "aws_eip" "dev-eip" {
 
 resource "aws_s3_bucket" "mys3bucket" {
 
-  # for_each Meta-Argument
+  # for_each Meta-Argument - Map Type
   for_each = {
     dev  = "my-dapp-bucket"
     qa   = "my-qapp-bucket"
@@ -149,4 +149,12 @@ resource "aws_s3_bucket" "mys3bucket" {
     bucketname  = "${each.key}-${each.value}"
     eachvalue   = each.value
   }
+}
+
+# Create 4 IAM Users
+resource "aws_iam_user" "myuser" {
+
+  # for_each Meta-Argument - Set Type
+  for_each = toset( ["Jack", "James", "Madhu", "Dave"] )
+  name     = each.key
 }
